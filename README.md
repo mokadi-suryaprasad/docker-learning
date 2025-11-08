@@ -21,10 +21,9 @@ It explains concepts clearly and provides runnable examples, Dockerfiles, networ
 | 10 | Building Images (Dockerfile Instructions) |
 | 11 | Cleaning Resources (`docker system prune`) |
 | 12 | Multi-Stage Dockerfile |
-| 13 | Push Images to DockerHub |
-| 14 | Google Artifact Registry (Private Registry) |
-| 15 | Google Distroless Images |
-| 16 | Docker Compose |
+| 13 | Google Artifact Registry (Private Registry) | Push Images to Google Artifact Registry |
+| 14 | Google Distroless Images |
+| 15 | Docker Compose |
 
 ---
 
