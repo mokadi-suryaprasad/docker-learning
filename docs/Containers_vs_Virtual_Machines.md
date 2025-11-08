@@ -1,7 +1,6 @@
 # Containers vs Virtual Machines
 
-This document explains the difference between **Containers** and **Virtual Machines (VMs)** in a clear and interview-friendly way, with diagrams and real-world examples.
-
+This document explains the difference between **Containers** and **Virtual Machines (VMs)**.
 ---
 
 ## 1. High-Level Difference
