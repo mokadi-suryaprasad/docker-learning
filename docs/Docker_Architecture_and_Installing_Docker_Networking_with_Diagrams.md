@@ -165,13 +165,50 @@ C3 → docker0 → C1
 ```
 `docker0` works like a **virtual switch**.
 
-### 3) Container Sends Traffic to Internet
+### 3) Container Sends Traffic to the Internet
+
+When a container communicates with the outside world (example: installing packages or calling an API), the traffic follows this path:
+
 ```
-Container → docker0 → Host Ethernet → Internet
+Container → docker0 (bridge) → Host Ethernet → Internet
 ```
-Docker uses **NAT (Network Address Translation)** so:
-- The **container’s private IP** becomes
-- The **host machine’s IP** when going to the internet
+
+#### Why This Works
+
+Each container has a **private internal IP**, such as:
+
+```
+172.17.0.2
+```
+
+Private IPs **cannot directly access the internet**, so Docker uses **NAT (Network Address Translation)**.
+
+#### What NAT Does
+
+NAT **replaces** the container’s private IP with the **host machine’s IP** when sending traffic to the internet.
+
+| Inside Container (Private) | Seen on Internet (Public) |
+|----------------------------|---------------------------|
+| 172.17.0.2                 | Public IP of Host         |
+
+So the outside world thinks the traffic is coming from the host computer, **not the container**.
+
+#### When the Internet Responds Back
+
+The response follows this reverse path:
+
+```
+Internet → Host Public IP → NAT translates → Container (172.17.0.2)
+```
+
+NAT ensures the reply is delivered back to the **correct container**.
+
+---
+
+### One-Line Interview Answer
+
+Docker uses **NAT** so the container’s **private IP** is translated to the **host’s public IP** when accessing the internet. The response is translated back to the container automatically.
+
 
 ### 4) Internet Sends Data Back
 ```
