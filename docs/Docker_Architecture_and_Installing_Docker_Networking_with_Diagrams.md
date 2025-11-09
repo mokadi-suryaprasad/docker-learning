@@ -1,4 +1,4 @@
-# Docker Architecture and Installing Docker & Network Changes (With Diagrams)
+# Docker Architecture and Installing Docker & Networking
 
 ## 1) What is Docker?
 
