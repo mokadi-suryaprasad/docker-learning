@@ -20,7 +20,7 @@ It explains concepts clearly and provides runnable examples, Dockerfiles, networ
 | 9  | Data Persistence (Volumes & Bind Mounts) |
 | 10 | Building Images (Dockerfile Instructions) |
 | 11 | Cleaning Resources (`docker system prune`) |
-| 12 | Multi-Stage Dockerfile |
+| 12 | Single-Stage & Multi-Stage Dockerfile |
 | 13 | Google Artifact Registry (Private Registry) & Push Images to Google Artifact Registry |
 | 14 | Google Distroless Images |
 | 15 | Docker Compose |
