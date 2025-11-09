@@ -9,7 +9,7 @@ A container bundles the application and everything it needs.
 
 ## 2) Docker Architecture
 
-# Docker Architecture Diagram — Step‑by‑Step
+### Docker Architecture Diagram — Step‑by‑Step
 
 ```
 +-----------------+        commands        +-------------------+
