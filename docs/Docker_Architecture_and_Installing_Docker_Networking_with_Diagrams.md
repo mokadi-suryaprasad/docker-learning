@@ -23,7 +23,7 @@ A container bundles the application and everything it needs.
 
 ```
 +-----------------+        commands        +-------------------+
-|   Docker Client  | --------------------> |  Docker Daemon     |
+|   Docker Client | -------------------->  |  Docker Daemon    |
 +-----------------+                        +---------+---------+
                                                       |
                                                       |
