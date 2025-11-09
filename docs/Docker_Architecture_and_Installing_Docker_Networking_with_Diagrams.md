@@ -51,23 +51,43 @@ A container bundles the application and everything it needs.
 
 ---
 
-## 3) Installing Docker (Ubuntu)
+## 3)Install Docker on Ubuntu 
 
-```bash
+### 1) Update system packages
+``` bash
 sudo apt update
-sudo apt install -y ca-certificates curl gnupg
+```
+### 2) Install Docker
+``` bash
+sudo apt install -y docker.io
+```
 
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg]   https://download.docker.com/linux/ubuntu   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io
+### 3) Start Docker service
+``` bash
 sudo systemctl start docker
+```
+
+### 4) Enable Docker to start on boot
+``` bash
 sudo systemctl enable docker
+```
+
+### 5) Check Docker version
+``` bash
 docker --version
+```
+
+### 6) Allow running docker without sudo (optional)
+``` bash
+sudo usermod -aG docker $USER
+```
+
+### *** Logout and login again OR restart the system ***
+
+### Test Docker
+
+``` bash
+docker run hello-world
 ```
 
 ---
