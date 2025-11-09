@@ -1,4 +1,4 @@
-# Docker Architecture and Installing Docker & Networking
+# Docker Architecture & Installing Docker & Networking
 
 ## 1) What is Docker?
 
