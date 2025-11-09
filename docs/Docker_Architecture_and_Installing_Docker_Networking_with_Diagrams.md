@@ -92,45 +92,100 @@ docker run hello-world
 
 ---
 
-## 4) Docker Networking
+## Docker Networking Diagram Explanation (Step-by-Step)
 
-When Docker installs, it creates a **virtual network bridge** (`docker0`).
+## How Containers Connect to Outside Network
 
-### Diagram
+When Docker is installed, it creates a **virtual network bridge** called `docker0`.  
+This acts like a **small internal switch** inside your machine.
 
+Each container gets a **private IP** and connects to `docker0`.
+
+---
+
+## Step-by-Step Flow
+
+### 1) Containers Receive Private IPs
+When containers start, Docker assigns internal IPs:
+- C1 → 172.17.0.2
+- C2 → 172.17.0.3
+- C3 → 172.17.0.4
+
+These IPs **only work inside your computer**.
+
+### 2) Containers Communicate With Each Other
 ```
-+----------------------------+
-|        Your Machine        |
-|                            |
-|   +--------------------+   |
-|   |    docker0 Bridge   | (Virtual Switch)
-|   +---------+----------+   |
-|             |              |
-|     +-------+-------+      |
-|     |               |      |
-| +---v---+     +-----v---+  |
-| | Cont1 |     |  Cont2  |  |
-| +-------+     +---------+  |
-| 172.17.0.2     172.17.0.3  |
-+----------------------------+
+C1 → docker0 → C2
+C2 → docker0 → C3
+C3 → docker0 → C1
+```
+`docker0` works like a **virtual switch**.
+
+### 3) Container Sends Traffic to Internet
+```
+Container → docker0 → Host Ethernet → Internet
+```
+Docker uses **NAT (Network Address Translation)** so:
+- The **container’s private IP** becomes
+- The **host machine’s IP** when going to the internet
+
+### 4) Internet Sends Data Back
+```
+Internet → Host → docker0 → Container
 ```
 
-Containers get **private IPs**, but cannot be reached directly from outside your machine.
-
-### To access containers, use **port mapping**:
-
+### 5) To Allow Outside Access to Containers → Use Port Mapping
+Example:
 ```bash
 docker run -d -p 8080:80 nginx
 ```
 
-| Host port | Container port |
+Meaning:
+| Host Port | Container Port |
 |----------|----------------|
 | 8080     | 80             |
 
-Open:
+Open in browser:
 ```
 http://localhost:8080
 ```
+
+---
+
+## Diagram
+
+```
++---------------------------------------------------+
+|                   Docker Host                     |
+|                                                   |
+|   +---------+   +---------+   +---------+         |
+|   |   C1    |   |   C2    |   |   C3    |         |
+|   +----+----+   +----+----+   +----+----+         |
+|        |             |             |              |
+|        +-------------+-------------+              |
+|                      |                            |
+|                 +----v----+                       |
+|                 | docker0 |   (Virtual Switch)    |
+|                 +----+----+                       |
+|                      |                            |
++----------------------|----------------------------+
+                       |
+                  +----v----+
+                  | Ethernet|
+                  +----+----+
+                       |
+                  +----v----+
+                  | Internet|
+                  +---------+
+```
+
+---
+
+## One-Line Interview Answer
+
+> Containers talk to each other through the `docker0` virtual bridge.  
+> To reach the internet, Docker uses **NAT**.  
+> To allow outside access to a container, we use **port mapping** (`-p hostPort:containerPort`).
 
 ---
 
