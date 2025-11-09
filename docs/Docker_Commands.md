@@ -102,3 +102,88 @@ docker stats
 ```
 
 ---
+
+# 10) Cleaning Docker Resources
+
+Over time, Docker stores unused containers, images, networks, and cache which occupy disk space. We use prune commands to clean them safely.
+
+---
+
+## Check Disk Usage
+```bash
+docker system df
+```
+
+---
+
+## Basic Cleanup
+Removes:
+- Stopped containers
+- Unused networks
+- Dangling images
+- Build cache
+
+```bash
+docker system prune
+```
+
+---
+
+## Full Cleanup (Removes All Unused Images)
+```bash
+docker system prune -a
+```
+
+> Use when disk is almost full.  
+> Unused images will need to be downloaded again.
+
+---
+
+## Remove Only Stopped Containers
+```bash
+docker container prune
+```
+
+---
+
+## Remove Only Unused Images
+```bash
+docker image prune
+```
+
+Remove all unused images:
+```bash
+docker image prune -a
+```
+
+---
+
+## Remove Only Unused Volumes (Be Careful)
+```bash
+docker volume prune
+```
+
+> Warning: Volumes may contain important data. Removing them can delete data permanently.
+
+---
+
+## Recommended Cleanup Sequence
+```bash
+docker system df
+docker system prune -f
+docker system prune -a -f
+docker volume prune -f
+```
+
+---
+
+## Summary
+
+| Command | What It Removes | Safe for Data? |
+|--------|-----------------|----------------|
+| `docker system prune` | Stopped containers, cache, dangling images, unused networks | ✅ Yes |
+| `docker system prune -a` | Above + all unused images | ✅ Yes |
+| `docker volume prune` | Unused volumes | ❌ Be careful |
+| `docker image prune -a` | All unused images | ✅ Yes |
+
+---
