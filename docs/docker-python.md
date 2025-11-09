@@ -1,60 +1,60 @@
-# Dockerfiles for Python (Single‑Stage & Multi‑Stage)
+# Single-Stage vs Multi-Stage Dockerfile
 
-## When to use
-- **Single‑stage**: dev, quick prototypes.
-- **Multi‑stage**: prod, smaller images, faster deploys.
+## Single-Stage Dockerfile
+A single-stage Dockerfile builds and runs the application in one image.
+Everything (installing packages, building code, running the app) happens in the same layer.
 
-### Project layout (example)
-```
-app/
-├─ main.py
-├─ requirements.txt
-└─ Dockerfile
-```
+**Result:**
+- Easy to write
+- But the final image is larger
 
----
-
-## Single‑Stage (FastAPI/Flask style)
+### Example (Python)
 ```dockerfile
-# Dockerfile
 FROM python:3.12-slim
-
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
 COPY . .
-ENV PORT=8080
 EXPOSE 8080
-# Example: uvicorn main:app for FastAPI
-CMD ["python","-m","uvicorn","main:app","--host","0.0.0.0","--port","8080"]
-```
-
-**Build & run**
-```bash
-docker build -t py-app:dev .
-docker run -d -p 8080:8080 --name py py-app:dev
+CMD ["python","main.py"]
 ```
 
 ---
 
-## Multi‑Stage (smaller runtime)
-```dockerfile
-# syntax=docker/dockerfile:1
+## Multi-Stage Dockerfile
+A multi-stage Dockerfile uses two or more images.
+The first stage builds the app, the final stage keeps only the files needed to run it.
 
+**Result:**
+- Final image is smaller and cleaner
+- Better for production
+
+### Example (Python)
+```dockerfile
 FROM python:3.12-slim AS builder
 WORKDIR /app
 COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 FROM python:3.12-slim
 WORKDIR /app
 COPY --from=builder /app /app
-ENV PORT=8080
 EXPOSE 8080
-CMD ["python","-m","uvicorn","main:app","--host","0.0.0.0","--port","8080"]
+CMD ["python","main.py"]
 ```
 
-**Why better?** Keeps only what you need at runtime.
+---
+
+## Simple Visual
+```
+Single-Stage:
+Build + Run in one image → Large Image
+
+Multi-Stage:
+Stage 1: Build (with tools)
+Stage 2: Copy only final output → Small Image
+```
+
+## Interview One-Liner
+Single-stage builds everything in one image. Multi-stage builds first, then copies only what's needed, resulting in a smaller production-ready image.
