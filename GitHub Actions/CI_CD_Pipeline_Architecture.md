@@ -61,7 +61,7 @@ This diagram shows a **GitHub‑first CI/CD** with **GAR** (images), **GCS** (ar
    - Update Helm values with **COMMIT_SHA**, PR to manifests → **ArgoCD sync** to **Pre‑Prod**  
    - **QA tests** run on the application
 
-4) **After ~2 weeks** and **management approval**, raise **PR for production release**.
+4) **After ~2 to 3 days** and **management approval**, raise **PR for production release**.
 
 5) **Production Pipeline** (on release tag/branch):
    - Store artifacts to GCS, Docker build, Trivy scan, **push to GAR**  
