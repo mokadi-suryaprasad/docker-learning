@@ -1,5 +1,4 @@
-
-```mermaid
+``` mermaid
 flowchart TB
   %% Roles
   dev[Developer]
@@ -14,83 +13,87 @@ flowchart TB
     prod[(release branch)]
   end
 
-  %% Shared Artifacts/Registries
-  gcs[(GCS - Build Artifacts)]
+  %% Shared Stores
+  gcs[(GCS - Artifacts)]
   gar[(GAR - Docker Images)]
-  charts[(Helm Charts repo)]
+  charts[(Helm Charts Repo)]
 
-  %% Dev Checks (on PR)
+  %% Pull Request Checks
   subgraph DEV_CHECKS[Pull Request Checks]
     co[Code Checkout]
     deps[Install Dependencies]
     lint[Lint / Syntax Check]
     unit[Unit Tests]
-    codeql[CodeQL (SAST)]
+    codeql[CodeQL Scan (SAST)]
   end
 
   dev --> |push code| feature
-  feature --> |open PR to main| DEV_CHECKS
-  DEV_CHECKS --> |pass & review| main
+  feature --> |PR to main| DEV_CHECKS
+  DEV_CHECKS --> |pass + review| main
 
   %% Development Pipeline
-  subgraph DEV_PIPE[Development Pipeline (on merge to main)]
-    dev_gcs[Store Artifacts -> GCS]
+  subgraph DEV_PIPE[Development Pipeline (merge to main)]
+    dev_gcs[Store Artifacts → GCS]
     dev_build[Docker Build]
     dev_trivy[Trivy Scan]
-    dev_push[Push Image -> GAR]
-    dev_helm[Update Helm values.yaml with COMMIT_SHA]
-    dev_pr[Auto PR to ArgoCD Manifests Repo]
-    dev_sync[ArgoCD Sync (GitOps) -> Dev Cluster]
+    dev_push[Push Image → GAR]
+    dev_helm[Update Helm values.yaml (COMMIT_SHA)]
+    dev_pr[PR → ArgoCD Manifests Repo]
+    dev_sync[ArgoCD Sync → Dev Cluster]
   end
 
-  main --> DEV_PIPE
-  DEV_PIPE --> gcs & gar
+  main --> dev_gcs
+  dev_gcs --> dev_build --> dev_trivy --> dev_push --> dev_helm --> dev_pr --> dev_sync
+  dev_gcs --> gcs
+  dev_push --> gar
   dev_helm --> charts
-  dev_pr --> dev_sync
 
   %% Pre-Prod Pipeline
-  feature --> |open PR to pre-prod| preprod
-  subgraph PRE_PROD[Pre-Prod Pipeline (on pre-prod PR merge)]
-    pp_gcs[Store Artifacts -> GCS]
+  feature --> |PR to pre-prod| preprod
+
+  subgraph PRE_PROD[Pre-Prod Pipeline (merge to pre-prod)]
+    pp_gcs[Store Artifacts → GCS]
     pp_build[Docker Build]
     pp_trivy[Trivy Scan]
-    pp_push[Push Image -> GAR]
-    pp_dast[DAST with OWASP ZAP]
-    pp_helm[Update Helm values.yaml with COMMIT_SHA]
-    pp_pr[Auto PR to ArgoCD Manifests Repo]
-    pp_sync[ArgoCD Sync (GitOps) -> Pre-Prod Cluster]
+    pp_push[Push Image → GAR]
+    pp_dast[DAST Security Scan (OWASP ZAP)]
+    pp_helm[Update Helm values.yaml (COMMIT_SHA)]
+    pp_pr[PR → ArgoCD Manifests Repo]
+    pp_sync[ArgoCD Sync → Pre-Prod Cluster]
   end
 
-  preprod --> PRE_PROD
-  PRE_PROD --> gcs & gar
+  preprod --> pp_gcs
+  pp_gcs --> pp_build --> pp_trivy --> pp_push --> pp_dast --> pp_helm --> pp_pr --> pp_sync
+  pp_gcs --> gcs
+  pp_push --> gar
   pp_helm --> charts
-  pp_pr --> pp_sync
+
   pp_sync --> qa
+  qa --> |Functional & Regression Testing| preprod
 
-  %% Manual testing window
-  qa --> |functional/regression tests| preprod
-  preprod -. after ~2 weeks & approvals .-> mgmt
+  preprod -. Wait ~2 weeks + Approval .-> mgmt
 
-  %% Prod Pipeline
-  mgmt --> |approval & release planning| prod
-  subgraph PROD[Production Pipeline (on release)]
-    pr_gcs[Store Artifacts -> GCS]
+  %% Production Pipeline
+  mgmt --> |Approval| prod
+
+  subgraph PROD[Production Pipeline (Release)]
+    pr_gcs[Store Artifacts → GCS]
     pr_build[Docker Build]
     pr_trivy[Trivy Scan]
-    pr_push[Push Image -> GAR]
-    pr_helm[Update Helm values.yaml with RELEASE TAG]
-    pr_branch[Create Release Branch / Tag]
-    pr_pr[Auto PR to ArgoCD Manifests Repo]
-    pr_sync[ArgoCD Sync (GitOps) -> Prod Cluster]
+    pr_push[Push Image → GAR]
+    pr_helm[Update Helm values.yaml (RELEASE TAG)]
+    pr_branch[Create Release Tag + Branch]
+    pr_pr[PR → ArgoCD Manifests Repo]
+    pr_sync[ArgoCD Sync → Prod Cluster]
   end
 
-  prod --> PROD
-  PROD --> gcs & gar
+  prod --> pr_gcs
+  pr_gcs --> pr_build --> pr_trivy --> pr_push --> pr_helm --> pr_branch --> pr_pr --> pr_sync
+  pr_gcs --> gcs
+  pr_push --> gar
   pr_helm --> charts
-  pr_branch --> pr_pr --> pr_sync
+
 ```
-
-
 # CI/CD Pipeline Architecture — Dev → Pre‑Prod → Prod (GitOps with ArgoCD)
 
 This diagram shows a **GitHub‑first CI/CD** with **GAR** (images), **GCS** (artifacts), **Trivy** (image scan),
