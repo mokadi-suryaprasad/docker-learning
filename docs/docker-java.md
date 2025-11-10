@@ -49,7 +49,7 @@ RUN mvn clean package -DskipTests
 EXPOSE 8080
 
 # Run the application (assumes jar will be created inside target/)
-ENTRYPOINT ["java", "-jar", "target/app.jar"]
+CMD ["java", "-jar", "target/app.jar"]
 
 ```
 
@@ -89,7 +89,7 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
 
 ```
 
