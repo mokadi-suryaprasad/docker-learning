@@ -1,98 +1,41 @@
-``` mermaid
+## CI/CD Pipeline Architecture (Dev → Pre-Prod → Prod)
+
+```mermaid
 flowchart TB
-  %% Roles
-  dev[Developer]
-  mgmt[Management Approvers]
-  qa[QA Team]
+  dev[Developer] -->|Push code| feature((feature branch))
+  feature -->|PR to main| pr_checks[PR Checks\nCheckout • Dependencies • Lint • Unit Tests • CodeQL]
+  pr_checks -->|Approved & Merged| main[(main branch)]
 
-  %% Git Repos
-  subgraph GH[GitHub]
-    feature[(Feature Branch)]
-    main[(main)]
-    preprod[(pre-prod branch)]
-    prod[(release branch)]
-  end
+  %% Development Environment Deployment
+  main --> dev_gcs[Store Artifacts → GCS]
+  dev_gcs --> dev_build[Docker Build]
+  dev_build --> dev_trivy[Trivy Scan]
+  dev_trivy --> dev_push[Push Image → GAR]
+  dev_push --> dev_helm[Update Helm values.yaml with COMMIT SHA]
+  dev_helm --> dev_sync[ArgoCD Sync → Deploy to DEV environment]
 
-  %% Shared Stores
-  gcs[(GCS - Artifacts)]
-  gar[(GAR - Docker Images)]
-  charts[(Helm Charts Repo)]
+  %% Pre-Prod Deployment Stage
+  feature -->|PR to pre-prod| preprod[(pre-prod branch)]
+  preprod --> pp_gcs[Store Artifacts → GCS]
+  pp_gcs --> pp_build[Docker Build]
+  pp_build --> pp_trivy[Trivy Scan]
+  pp_trivy --> pp_push[Push Image → GAR]
+  pp_push --> pp_zap[DAST Scan → OWASP ZAP]
+  pp_zap --> pp_helm[Update Helm values.yaml with COMMIT SHA]
+  pp_helm --> pp_sync[ArgoCD Sync → Deploy to PRE-PROD environment]
 
-  %% Pull Request Checks
-  subgraph DEV_CHECKS[Pull Request Checks]
-    co[Code Checkout]
-    deps[Install Dependencies]
-    lint[Lint / Syntax Check]
-    unit[Unit Tests]
-    codeql[CodeQL Scan (SAST)]
-  end
+  %% QA Testing
+  pp_sync --> qa[QA Team Testing\nFunctional + Regression]
+  qa -->|After ~2 Weeks Sign-off| mgmt[Management Approval]
 
-  dev --> |push code| feature
-  feature --> |PR to main| DEV_CHECKS
-  DEV_CHECKS --> |pass + review| main
-
-  %% Development Pipeline
-  subgraph DEV_PIPE[Development Pipeline (merge to main)]
-    dev_gcs[Store Artifacts → GCS]
-    dev_build[Docker Build]
-    dev_trivy[Trivy Scan]
-    dev_push[Push Image → GAR]
-    dev_helm[Update Helm values.yaml (COMMIT_SHA)]
-    dev_pr[PR → ArgoCD Manifests Repo]
-    dev_sync[ArgoCD Sync → Dev Cluster]
-  end
-
-  main --> dev_gcs
-  dev_gcs --> dev_build --> dev_trivy --> dev_push --> dev_helm --> dev_pr --> dev_sync
-  dev_gcs --> gcs
-  dev_push --> gar
-  dev_helm --> charts
-
-  %% Pre-Prod Pipeline
-  feature --> |PR to pre-prod| preprod
-
-  subgraph PRE_PROD[Pre-Prod Pipeline (merge to pre-prod)]
-    pp_gcs[Store Artifacts → GCS]
-    pp_build[Docker Build]
-    pp_trivy[Trivy Scan]
-    pp_push[Push Image → GAR]
-    pp_dast[DAST Security Scan (OWASP ZAP)]
-    pp_helm[Update Helm values.yaml (COMMIT_SHA)]
-    pp_pr[PR → ArgoCD Manifests Repo]
-    pp_sync[ArgoCD Sync → Pre-Prod Cluster]
-  end
-
-  preprod --> pp_gcs
-  pp_gcs --> pp_build --> pp_trivy --> pp_push --> pp_dast --> pp_helm --> pp_pr --> pp_sync
-  pp_gcs --> gcs
-  pp_push --> gar
-  pp_helm --> charts
-
-  pp_sync --> qa
-  qa --> |Functional & Regression Testing| preprod
-
-  preprod -. Wait ~2 weeks + Approval .-> mgmt
-
-  %% Production Pipeline
-  mgmt --> |Approval| prod
-
-  subgraph PROD[Production Pipeline (Release)]
-    pr_gcs[Store Artifacts → GCS]
-    pr_build[Docker Build]
-    pr_trivy[Trivy Scan]
-    pr_push[Push Image → GAR]
-    pr_helm[Update Helm values.yaml (RELEASE TAG)]
-    pr_branch[Create Release Tag + Branch]
-    pr_pr[PR → ArgoCD Manifests Repo]
-    pr_sync[ArgoCD Sync → Prod Cluster]
-  end
-
-  prod --> pr_gcs
-  pr_gcs --> pr_build --> pr_trivy --> pr_push --> pr_helm --> pr_branch --> pr_pr --> pr_sync
-  pr_gcs --> gcs
-  pr_push --> gar
-  pr_helm --> charts
-
+  %% Production Deployment
+  mgmt -->|Approve Release| prod[(release tag/branch)]
+  prod --> pr_gcs[Store Artifacts → GCS]
+  pr_gcs --> pr_build[Docker Build]
+  pr_build --> pr_trivy[Trivy Scan]
+  pr_trivy --> pr_push[Push Image → GAR]
+  pr_push --> pr_helm[Update Helm values.yaml with RELEASE TAG]
+  pr_helm --> pr_sync[ArgoCD Sync → Deploy to PRODUCTION environment]
 ```
 # CI/CD Pipeline Architecture — Dev → Pre‑Prod → Prod (GitOps with ArgoCD)
 
