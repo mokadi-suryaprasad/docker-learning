@@ -32,11 +32,25 @@ target/app.jar
 
 ## Single‑Stage Dockerfile (Simple but Larger Image)
 ```dockerfile
-FROM eclipse-temurin:21-jre-alpine
-WORKDIR /appx
-COPY target/app.jar app.jar
+
+FROM maven:3.8.5-openjdk-21
+
+# Set work directory
+WORKDIR /app
+
+# Copy project files
+COPY pom.xml .
+COPY src ./src
+
+# Build the application
+RUN mvn clean package -DskipTests
+
+# Expose port
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+# Run the application (assumes jar will be created inside target/)
+ENTRYPOINT ["java", "-jar", "target/app.jar"]
+
 ```
 
 **Build & Run**
@@ -49,24 +63,34 @@ docker run -d -p 8080:8080 --name spring-single spring-app:single
 
 ## Multi‑Stage Dockerfile (Recommended for CI/CD & Production)
 ```dockerfile
-# Stage 1: Build the JAR
-FROM maven:3.9.9-eclipse-temurin-21 AS build
+
+# ---- Stage 1: Build the JAR using Maven ----
+FROM maven:3.8.5-openjdk-21 AS build
+
 WORKDIR /app
 
-# Cache dependencies
+# Copy pom.xml and download dependencies (cache optimization)
 COPY pom.xml .
-RUN mvn -B -DskipTests dependency:go-offline
+RUN mvn dependency:go-offline -B
 
-# Copy source code and build
+# Copy the source code
 COPY src ./src
-RUN mvn -B -DskipTests package
 
-# Stage 2: Runtime
-FROM eclipse-temurin:21-jre-alpine
+# Build the application
+RUN mvn clean package -DskipTests
+
+# ---- Stage 2: Run with OpenJDK ----
+FROM openjdk:21-jdk
+
 WORKDIR /app
+
+# Copy the JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
 ```
 
 **Build & Run**
