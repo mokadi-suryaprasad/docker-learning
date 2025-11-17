@@ -5,7 +5,6 @@
 - **Multi‑stage**: Use when you want Docker to build the JAR (recommended for CI/CD & Production).
 
 # Single-Stage vs Multi-Stage Docker Build  
-### (Clear and Interview-Ready Explanation)
 
 ---
 
