@@ -147,6 +147,42 @@ Example:
 
 ---
 
+## GitHub Actions Workflow (Trigger only on feature branches)
+
+- .github/workflows/ci-feature.yaml
+
+```yaml
+name: CI for Feature Branches
+
+on:
+  push:
+    branches:
+      - 'feature/*'   # triggers for any branch starting with feature/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Build Application
+        run: npm run build
+
+```
+
 ## 14. Difference Between GitHub Actions and Jenkins
 | Feature | GitHub Actions | Jenkins |
 |--------|----------------|---------|
