@@ -450,9 +450,7 @@ Configure 1 server or 1,000 servers with the same playbook.
         state: present
 ```
 
-- **Terraform** – Creates cloud infrastructure as code.
-
-# Terraform – Creates Cloud Infrastructure as Code
+# Terraform – Creates cloud infrastructure as code.
 
 ## What is Terraform?
 Terraform is an **Infrastructure as Code (IaC)** tool used to create, update, and manage cloud infrastructure using simple configuration files.  
@@ -1768,6 +1766,7 @@ Kubernetes is a powerful container orchestration system that automates deploymen
 
 ## Final Summary
 DevOps automates the entire software lifecycle — from coding to deployment. It improves speed, quality, security, and reliability. Using Git, GitHub, Docker, Kubernetes, Terraform, Ansible, GitHub Actions, ArgoCD, CodeQL, Trivy, and OWASP ZAP, DevOps provides end‑to‑end automation and continuous delivery. It reduces downtime, prevents errors, saves cost, and ensures faster releases.
+
 
 
 
