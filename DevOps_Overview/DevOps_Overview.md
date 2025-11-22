@@ -71,8 +71,7 @@ DevOps combines Development and Operations to deliver software:
 10. **Continuous Feedback** – Quick issue fixing.
 
 ## Key DevOps Tools 
-- **Git** – Tracks code changes.
-# Git - Deep Explanation
+## Git  – Tracks code changes.
 
 ## What is Git?
 Git is a distributed version control system used to track changes in source code.  
@@ -1768,6 +1767,7 @@ Kubernetes is a powerful container orchestration system that automates deploymen
 
 ## Final Summary
 DevOps automates the entire software lifecycle — from coding to deployment. It improves speed, quality, security, and reliability. Using Git, GitHub, Docker, Kubernetes, Terraform, Ansible, GitHub Actions, ArgoCD, CodeQL, Trivy, and OWASP ZAP, DevOps provides end‑to‑end automation and continuous delivery. It reduces downtime, prevents errors, saves cost, and ensures faster releases.
+
 
 
 
