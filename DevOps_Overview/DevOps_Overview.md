@@ -577,9 +577,7 @@ resource "aws_instance" "example" {
 ## One-Line Summary
 Terraform is an Infrastructure as Code tool that automates cloud resource creation, providing speed, consistency, and reliability for DevOps environments.
 
-- **GitHub Actions** – CI/CD automation.
-
-# GitHub Actions - Deep Explanation
+# GitHub Actions – CI/CD automation.
 
 ## What is GitHub Actions?
 GitHub Actions is a **CI/CD (Continuous Integration and Continuous Delivery)** automation platform built directly inside GitHub.  
@@ -1766,6 +1764,7 @@ Kubernetes is a powerful container orchestration system that automates deploymen
 
 ## Final Summary
 DevOps automates the entire software lifecycle — from coding to deployment. It improves speed, quality, security, and reliability. Using Git, GitHub, Docker, Kubernetes, Terraform, Ansible, GitHub Actions, ArgoCD, CodeQL, Trivy, and OWASP ZAP, DevOps provides end‑to‑end automation and continuous delivery. It reduces downtime, prevents errors, saves cost, and ensures faster releases.
+
 
 
 
