@@ -327,8 +327,9 @@ Create project documentation inside the repo.
 git clone https://github.com/user/repo.git
 ```
 
-- **Ansible** – Automates server setup.
-# Ansible - Deep Explanation
+# Ansible – Automates server setup.
+
+## Ansible - Deep Explanation
 
 ## What is Ansible?
 Ansible is an open-source automation tool used to **configure servers, deploy applications, and manage infrastructure**.  
@@ -1767,6 +1768,7 @@ Kubernetes is a powerful container orchestration system that automates deploymen
 
 ## Final Summary
 DevOps automates the entire software lifecycle — from coding to deployment. It improves speed, quality, security, and reliability. Using Git, GitHub, Docker, Kubernetes, Terraform, Ansible, GitHub Actions, ArgoCD, CodeQL, Trivy, and OWASP ZAP, DevOps provides end‑to‑end automation and continuous delivery. It reduces downtime, prevents errors, saves cost, and ensures faster releases.
+
 
 
 
