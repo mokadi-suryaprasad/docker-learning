@@ -4,6 +4,53 @@
 ## What is DevOps?
 DevOps is a culture and working method where Development and Operations teams work together to build, test, deploy, and manage applications faster and more safely. It focuses on automation, teamwork, and continuous improvement so software reaches users quickly without errors.
 
+## Dev + Ops = DevOps
+
+## 1. Dev (Development)
+- Writing code
+- Building applications
+- Unit testing
+- Creating new features
+
+## 2. Ops (Operations)
+- Deploying applications
+- Managing servers & infrastructure
+- Monitoring & logging
+- Automation
+- Ensuring reliability & scaling
+
+---
+
+# DevOps = Dev + Ops
+
+DevOps combines Development and Operations to deliver software:
+- Faster
+- More reliably
+- With continuous improvement
+
+---
+
+## DevOps Goals
+- Continuous Integration (CI)
+- Continuous Delivery/Deployment (CD)
+- Automation
+- Collaboration
+- High-quality releases
+
+---
+
+## DevOps Workflow
+1. Plan  
+2. Code  
+3. Build  
+4. Test  
+5. Release  
+6. Deploy  
+7. Monitor  
+8. Feedback  
+
+---
+
 ## Why DevOps is Important
 - Modern applications need speed  
 - Companies want secure and stable releases  
@@ -1721,6 +1768,7 @@ Kubernetes is a powerful container orchestration system that automates deploymen
 
 ## Final Summary
 DevOps automates the entire software lifecycle — from coding to deployment. It improves speed, quality, security, and reliability. Using Git, GitHub, Docker, Kubernetes, Terraform, Ansible, GitHub Actions, ArgoCD, CodeQL, Trivy, and OWASP ZAP, DevOps provides end‑to‑end automation and continuous delivery. It reduces downtime, prevents errors, saves cost, and ensures faster releases.
+
 
 
 
